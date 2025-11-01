@@ -9,7 +9,7 @@ import org.cobalt.internal.feat.pathfinding.calculation.reconstruction.PathRecon
 import org.cobalt.internal.feat.pathfinding.calculation.validation.IWalkabilityValidator
 import org.cobalt.internal.feat.pathfinding.calculation.validation.StandardWalkabilityValidator
 import java.util.*
-import org.cobalt.CoreMod.mc
+import org.cobalt.Cobalt.mc
 import org.cobalt.api.util.ChatUtils
 import org.cobalt.internal.feat.pathfinding.calculation.movement.SkyblockMovementProvider
 

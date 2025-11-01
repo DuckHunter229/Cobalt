@@ -2,7 +2,7 @@ package org.cobalt.api.util
 
 import kotlin.math.ceil
 import net.minecraft.util.math.BlockPos
-import org.cobalt.CoreMod.mc
+import org.cobalt.Cobalt.mc
 
 object PlayerUtils {
 

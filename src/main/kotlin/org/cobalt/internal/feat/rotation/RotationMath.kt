@@ -4,7 +4,7 @@ import kotlin.math.*
 import kotlin.random.Random
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.util.math.MathHelper.wrapDegrees
-import org.cobalt.CoreMod.mc
+import org.cobalt.Cobalt.mc
 
 internal object RotationMath {
   data class OvershootParams(val overshootTargetYaw: Float, val overshootTargetPitch: Float)

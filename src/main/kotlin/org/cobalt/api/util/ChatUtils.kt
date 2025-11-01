@@ -1,12 +1,12 @@
 package org.cobalt.api.util
 
 import kotlin.math.roundToInt
-import net.minecraft.client.MinecraftClient
 import net.minecraft.text.MutableText
 import net.minecraft.text.Style
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
 import net.minecraft.util.Formatting
+import org.cobalt.Cobalt.mc
 
 object ChatUtils {
   fun sendDebug(message: String) {
@@ -57,7 +57,6 @@ object ChatUtils {
     return result
   }
 
-  private val mc = MinecraftClient.getInstance()
   private val prefix = Text.literal("${Formatting.DARK_GRAY}[")
     .append(buildGradient("Cobalt", 0x4A90E2, 0x2C5DA3))
     .append(Text.literal("${Formatting.DARK_GRAY}] "))

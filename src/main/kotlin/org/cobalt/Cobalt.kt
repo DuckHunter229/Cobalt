@@ -5,10 +5,10 @@ import net.minecraft.client.MinecraftClient
 import org.cobalt.api.command.CommandManager
 import org.cobalt.api.event.EventBus
 import org.cobalt.internal.command.MainCommand
-import org.cobalt.api.util.helper.TickScheduler
+import org.cobalt.api.util.TickScheduler
 import org.cobalt.internal.rpc.RichPresenceManager
 
-object CoreMod : ClientModInitializer{
+object Cobalt : ClientModInitializer{
   val mc: MinecraftClient
     get() = MinecraftClient.getInstance()
 

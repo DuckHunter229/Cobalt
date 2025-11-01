@@ -20,7 +20,7 @@
     "client": [
       {
         "adapter": "kotlin",
-        "value": "org.cobalt.CoreMod"
+        "value": "org.cobalt.Cobalt"
       }
     ]
   },

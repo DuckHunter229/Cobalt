@@ -4,7 +4,7 @@ import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.util.math.BlockPos
 import org.cobalt.api.feat.pathfinder.Pathfinding
 import net.minecraft.client.gui.screen.ChatScreen
-import org.cobalt.CoreMod.mc
+import org.cobalt.Cobalt.mc
 import org.cobalt.api.event.EventBus
 import org.cobalt.api.util.ChatUtils
 import org.cobalt.util.pathfinding.calculation.PathCalculator
