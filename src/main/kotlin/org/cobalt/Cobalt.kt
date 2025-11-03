@@ -6,8 +6,8 @@ import org.cobalt.api.command.CommandManager
 import org.cobalt.api.event.EventBus
 import org.cobalt.api.feat.rpc.DiscordPresence
 import org.cobalt.api.util.TickScheduler
+import org.cobalt.internal.addon.AddonManager
 import org.cobalt.internal.command.MainCommand
-import org.cobalt.internal.module.ModuleManager
 
 object Cobalt : ClientModInitializer {
 
@@ -20,7 +20,7 @@ object Cobalt : ClientModInitializer {
 
   @Suppress("UNUSED_EXPRESSION")
   override fun onInitializeClient() {
-    ModuleManager.loadModules()
+    AddonManager.loadAddons()
 
     CommandManager.register(MainCommand)
     CommandManager.dispatchAll()
