@@ -1,4 +1,4 @@
-package org.cobalt.api.event.impl
+package org.cobalt.api.event.impl.render
 
 import net.minecraft.client.render.Camera
 import net.minecraft.client.render.VertexConsumerProvider

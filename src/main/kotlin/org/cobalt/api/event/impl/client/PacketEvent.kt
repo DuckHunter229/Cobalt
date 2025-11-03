@@ -1,4 +1,4 @@
-package org.cobalt.api.event.impl
+package org.cobalt.api.event.impl.client
 
 import org.cobalt.api.event.Event
 import net.minecraft.network.packet.Packet

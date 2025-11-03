@@ -4,7 +4,7 @@ import meteordevelopment.discordipc.DiscordIPC
 import meteordevelopment.discordipc.RichPresence
 import org.cobalt.Cobalt
 import org.cobalt.api.event.annotation.SubscribeEvent
-import org.cobalt.api.event.impl.TickEvent
+import org.cobalt.api.event.impl.client.TickEvent
 
 object DiscordPresence {
 

@@ -2,7 +2,7 @@ package org.cobalt.api.util
 
 import org.cobalt.api.event.EventBus
 import org.cobalt.api.event.annotation.SubscribeEvent
-import org.cobalt.api.event.impl.TickEvent
+import org.cobalt.api.event.impl.client.TickEvent
 import java.util.Comparator
 import java.util.PriorityQueue
 

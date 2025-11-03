@@ -4,14 +4,14 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import org.cobalt.api.module.setting.Setting
 
-class TextSetting(
+class KeyBindSetting(
   name: String,
   description: String,
-  defaultValue: String
-) : Setting<String>(name, description, defaultValue) {
+  defaultValue: Int
+) : Setting<Int>(name, description, defaultValue) {
 
   override fun read(element: JsonElement) {
-    this.value = element.asString
+    this.value = element.asInt
   }
 
   override fun write(): JsonElement {

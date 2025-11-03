@@ -4,9 +4,10 @@
   "compatibilityLevel": "JAVA_21",
   "package": "org.cobalt.mixin",
   "client": [
+    "network.PacketEvent_ClientConnectionMixin",
     "client.TickEvent_MinecraftClientMixin",
-    "client.PacketEvent_ClientConnectionMixin",
     "player.LookLock_MouseMixin",
+    "render.NvgEvent_GameRendererMixin",
     "render.TextureTracking_GlStateManagerMixin",
     "render.WorldContext_WorldRendererMixin"
   ],
