@@ -1,8 +1,8 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "org.cobalt.mixin",
   "compatibilityLevel": "JAVA_21",
+  "package": "org.cobalt.mixin",
   "client": [
     "client.TickEvent_MinecraftClientMixin",
     "client.PacketEvent_ClientConnectionMixin",
@@ -17,4 +17,3 @@
     "defaultRequire": 1
   }
 }
-
