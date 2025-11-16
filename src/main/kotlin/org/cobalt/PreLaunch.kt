@@ -1,4 +1,4 @@
-package org.cobalt.internal.loader
+package org.cobalt
 
 import java.io.IOException
 import java.nio.file.Files
@@ -12,7 +12,7 @@ import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint
 import net.fabricmc.loader.impl.launch.FabricLauncherBase
 import org.spongepowered.asm.mixin.Mixins
 
-class Core : PreLaunchEntrypoint {
+class PreLaunch : PreLaunchEntrypoint {
 
   override fun onPreLaunch() {
     loadAddons()
@@ -20,6 +20,7 @@ class Core : PreLaunchEntrypoint {
 
   fun loadAddons() {
     val addonsDir = Paths.get("config/cobalt/addons/")
+
     if (!Files.isDirectory(addonsDir)) {
       Files.createDirectories(addonsDir)
       return
@@ -62,4 +63,5 @@ class Core : PreLaunchEntrypoint {
       }
     }
   }
+
 }

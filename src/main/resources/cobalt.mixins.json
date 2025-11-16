@@ -4,8 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "package": "org.cobalt.mixin",
   "plugin": "org.cobalt.init.MixinAutoDiscover",
-  "mixins": [],
-  "client": [],
+
   "injectors": {
     "defaultRequire": 1
   }

@@ -31,3 +31,8 @@ abstract class Module(
   }
 
 }
+
+data class Category(
+  val name: String,
+  val svg: String,
+)

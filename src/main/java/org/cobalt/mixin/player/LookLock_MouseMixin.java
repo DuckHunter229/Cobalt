@@ -9,10 +9,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Mouse.class)
 public class LookLock_MouseMixin {
+
   @Inject(method = "updateMouse", at = @At("HEAD"), cancellable = true)
   private void onUpdateMouse(CallbackInfo ci) {
     if (MovementManager.isLookLocked) {
       ci.cancel();
     }
   }
+
 }

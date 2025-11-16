@@ -11,18 +11,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(World.class)
-abstract class MixinWorld {
-    
-    @Inject(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z", at = @At("HEAD"))
-    private void onBlockChange(BlockPos pos, BlockState newState, int flags, int maxUpdateDepth, CallbackInfoReturnable<Boolean> cir) {
-        if (MinecraftClient.getInstance().world != (Object) this) {
-            return;
-        }
-        
-        BlockState oldBlock = ((World)(Object)this).getBlockState(pos);
-        
-        if (oldBlock.getBlock() != newState.getBlock()) {
-            new BlockChangeEvent(pos.toImmutable(), oldBlock, newState).post();
-        }
+abstract class BlockBreak_ClientPlayerInteractionManagerMixin {
+
+  @Inject(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z", at = @At("HEAD"))
+  private void onBlockChange(BlockPos pos, BlockState newState, int flags, int maxUpdateDepth, CallbackInfoReturnable<Boolean> cir) {
+    if (MinecraftClient.getInstance().world != (Object) this) {
+      return;
     }
+
+    BlockState oldBlock = ((World) (Object) this).getBlockState(pos);
+
+    if (oldBlock.getBlock() != newState.getBlock()) {
+      new BlockChangeEvent(pos.toImmutable(), oldBlock, newState).post();
+    }
+  }
+
 }

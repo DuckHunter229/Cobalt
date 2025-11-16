@@ -1,9 +1,9 @@
 package org.cobalt.api.event.impl.client
 
-import org.cobalt.api.event.Event
 import net.minecraft.network.packet.Packet
-import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket
+import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket
+import org.cobalt.api.event.Event
 
 abstract class ChatEvent(val packet: Packet<*>) : Event(true) {
 
@@ -20,4 +20,5 @@ abstract class ChatEvent(val packet: Packet<*>) : Event(true) {
       else -> null
     }
   }
+
 }

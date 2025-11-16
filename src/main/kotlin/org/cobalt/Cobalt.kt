@@ -4,15 +4,11 @@ import net.fabricmc.api.ClientModInitializer
 import net.minecraft.client.MinecraftClient
 import org.cobalt.api.command.CommandManager
 import org.cobalt.api.event.EventBus
-import org.cobalt.api.event.annotation.SubscribeEvent
-import org.cobalt.api.event.impl.client.BlockChangeEvent
-import org.cobalt.api.util.ChatUtils
-import org.cobalt.TestArea
-import org.cobalt.internal.feat.rpc.DiscordPresence
 import org.cobalt.api.util.TickScheduler
-import org.cobalt.internal.addon.AddonManager
 import org.cobalt.internal.command.MainCommand
+import org.cobalt.internal.feat.rpc.DiscordPresence
 import org.cobalt.internal.helper.Config
+import org.cobalt.internal.loader.Loader
 
 object Cobalt : ClientModInitializer {
 
@@ -25,7 +21,7 @@ object Cobalt : ClientModInitializer {
 
   @Suppress("UNUSED_EXPRESSION")
   override fun onInitializeClient() {
-    AddonManager.loadAddons()
+    Loader.initialize()
     Config.loadModulesConfig()
 
     CommandManager.register(MainCommand)
@@ -34,10 +30,10 @@ object Cobalt : ClientModInitializer {
     listOf(
       TickScheduler,
       DiscordPresence,
-      TestArea
     ).forEach { EventBus.register(it) }
-    org.cobalt.internal.loader.Loader.initialize()
+
     DiscordPresence.connect()
     println("Cobalt Mod Initialized")
   }
+
 }

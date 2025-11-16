@@ -19,7 +19,7 @@ public class RSANuker_YggdrasilServicesKeyInfoMixin {
     remap = false
   )
   private void redirectLoggerError(Logger instance, String s, Object o, Object o1) {
-    // Do nothing - suppress the log
+    // Do nothing - Suppress the log
   }
 
 }

@@ -5,7 +5,8 @@ import net.minecraft.util.math.BlockPos
 import org.cobalt.Cobalt.mc
 
 object PlayerUtils {
- /**
+
+  /**
   * @return The player's current position
   */
   val position: BlockPos

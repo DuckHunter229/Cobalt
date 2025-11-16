@@ -7,8 +7,6 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
-import org.cobalt.api.command.annotation.DefaultHandler
-import org.cobalt.api.command.annotation.SubCommand
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.declaredMemberFunctions
@@ -19,6 +17,8 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.command.CommandRegistryAccess
+import org.cobalt.api.command.annotation.DefaultHandler
+import org.cobalt.api.command.annotation.SubCommand
 
 object CommandManager {
 
@@ -100,6 +100,7 @@ object CommandManager {
       argBuilder.then(buildArguments(params, index + 1, method, command))
     }
   }
+
   fun removeCommand(command: Command) {
     commands.remove(command)
   }

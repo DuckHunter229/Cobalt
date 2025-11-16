@@ -49,4 +49,5 @@ public class PacketEvent_ClientConnectionMixin {
       new ChatEvent.Send(packet).post();
     }
   }
+
 }

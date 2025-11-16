@@ -24,7 +24,7 @@
       }
     ],
     "preLaunch": [
-      "org.cobalt.internal.loader.Core"
+      "org.cobalt.PreLaunch"
     ]
   },
   "mixins": [

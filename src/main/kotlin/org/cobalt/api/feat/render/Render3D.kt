@@ -10,7 +10,7 @@ import org.cobalt.api.event.impl.render.WorldRenderContext
 import org.cobalt.internal.helper.RenderLayers
 import org.joml.Vector3f
 
-object Render2D {
+object Render3D {
 
   fun drawBox(context: WorldRenderContext, box: Box, color: Color, esp: Boolean = false) {
     val matrix = context.matrixStack ?: return
