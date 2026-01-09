@@ -16,5 +16,6 @@ internal class InfoSetting(
 
   override fun read(element: JsonElement) {}
   override fun write(): JsonElement = JsonPrimitive("")
+
 }
 
