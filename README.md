@@ -15,9 +15,6 @@
 
 </div>
 
-> [!WARNING]
-> The project includes early implementations of a UI system. The mod itself is a **work-in-progress** and not yet feature-complete, but they serve as a foundation for future development and community contributions.
-
 > [!NOTE]
 > This project was made possible thanks to:
 > - [Nebula Client](https://nebulaclient.net) (UI Design)
