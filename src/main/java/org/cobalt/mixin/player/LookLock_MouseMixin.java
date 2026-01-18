@@ -38,4 +38,11 @@ public abstract class LookLock_MouseMixin {
     }
   }
 
+  @Inject(method = "lockCursor", at = @At("HEAD"), cancellable = true)
+  private void onLockCursor(CallbackInfo ci) {
+    if (MouseUtils.isMouseUngrabbed()) {
+      ci.cancel();
+    }
+  }
+
 }
