@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_21",
   "package": "org.cobalt.mixin",
-  "plugin": "org.cobalt.init.MixinAutoDiscover",
+  "plugin": "org.cobalt.init.CobaltMixinPlugin",
   "injectors": {
     "defaultRequire": 1
   }

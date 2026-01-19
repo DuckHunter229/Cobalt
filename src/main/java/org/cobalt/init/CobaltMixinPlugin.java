@@ -16,14 +16,14 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-public class MixinAutoDiscover implements IMixinConfigPlugin {
+public class CobaltMixinPlugin implements IMixinConfigPlugin {
 
   private final List<String> mixins = new ArrayList<>();
 
   @Override
   public void onLoad(String mixinPackage) {
     try {
-      URL location = MixinAutoDiscover.class.getProtectionDomain().getCodeSource().getLocation();
+      URL location = CobaltMixinPlugin.class.getProtectionDomain().getCodeSource().getLocation();
       Path path = Paths.get(location.toURI());
 
       if (Files.isDirectory(path)) {
