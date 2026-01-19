@@ -64,11 +64,24 @@ object EventBus {
     }
   }
 
+  private val classCache = ConcurrentHashMap<Class<*>, List<Class<*>>>()
+
   @JvmStatic
   fun post(event: Event): Event {
     val eventClass = event::class.java
 
-    listeners[eventClass]?.forEach { data -> data.invoker.accept(event) }
+    classCache
+      .computeIfAbsent(eventClass) { clazz ->
+        val classes = mutableSetOf<Class<*>>()
+        var c: Class<*>? = clazz
+        while (c != null) {
+          classes.add(c)
+          c.interfaces.forEach { classes.add(it) }
+          c = c.superclass
+        }
+        classes.toList()
+      }
+      .forEach { clazz -> listeners[clazz]?.forEach { data -> data.invoker.accept(event) } }
 
     handleDynamic(event)
     return event
