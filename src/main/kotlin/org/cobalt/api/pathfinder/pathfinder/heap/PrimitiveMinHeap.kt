@@ -4,9 +4,8 @@ import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap
 
 class PrimitiveMinHeap(initialCapacity: Int) {
 
-  private val nodeToIndexMap: Long2IntOpenHashMap = Long2IntOpenHashMap(initialCapacity).apply {
-    defaultReturnValue(-1)
-  }
+  private val nodeToIndexMap: Long2IntOpenHashMap =
+    Long2IntOpenHashMap(initialCapacity).apply { defaultReturnValue(-1) }
 
   private var nodes: LongArray = LongArray(initialCapacity + 1)
   private var costs: DoubleArray = DoubleArray(initialCapacity + 1)
@@ -19,6 +18,16 @@ class PrimitiveMinHeap(initialCapacity: Int) {
   fun clear() {
     size = 0
     nodeToIndexMap.clear()
+  }
+
+  fun peekMin(): Long {
+    if (size == 0) throw NoSuchElementException()
+    return nodes[1]
+  }
+
+  fun peekMinCost(): Double {
+    if (size == 0) throw NoSuchElementException()
+    return costs[1]
   }
 
   fun contains(packedNode: Long): Boolean = nodeToIndexMap.containsKey(packedNode)
@@ -69,14 +78,8 @@ class PrimitiveMinHeap(initialCapacity: Int) {
   private fun ensureCapacity() {
     if (size >= nodes.size - 1) {
       val newCap = nodes.size * 2
-      val newNodes = LongArray(newCap)
-      val newCosts = DoubleArray(newCap)
-
-      System.arraycopy(nodes, 0, newNodes, 0, nodes.size)
-      System.arraycopy(costs, 0, newCosts, 0, costs.size)
-
-      this.nodes = newNodes
-      this.costs = newCosts
+      nodes = nodes.copyOf(newCap)
+      costs = costs.copyOf(newCap)
     }
   }
 

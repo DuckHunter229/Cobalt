@@ -2,6 +2,7 @@ package org.cobalt.api.pathfinder.pathfinder
 
 import java.util.*
 import java.util.concurrent.*
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.abs
 import kotlin.math.max
 import org.cobalt.api.pathfinder.Node
@@ -56,26 +57,27 @@ abstract class AbstractPathfinder(
   }
 
   protected val navigationPointProvider: NavigationPointProvider = pathfinderConfiguration.provider
-  protected val validationProcessors: List<ValidationProcessor>? = pathfinderConfiguration.getNodeValidationProcessors()
-  protected val costProcessors: List<CostProcessor>? = pathfinderConfiguration.getNodeCostProcessors()
+  protected val validationProcessors: List<ValidationProcessor>? =
+    pathfinderConfiguration.getNodeValidationProcessors()
+  protected val costProcessors: List<CostProcessor>? =
+    pathfinderConfiguration.getNodeCostProcessors()
   protected val neighborStrategy: INeighborStrategy = pathfinderConfiguration.neighborStrategy
 
   private val pathfinderHooks: MutableSet<PathfinderHook> = Collections.synchronizedSet(HashSet())
 
-  @Volatile
-  private var abortRequested = false
+  private val abortRequested = AtomicBoolean(false)
 
   override fun findPath(
     start: PathPosition,
     target: PathPosition,
     context: EnvironmentContext?,
   ): CompletionStage<PathfinderResult> {
-    this.abortRequested = false
+    this.abortRequested.set(false)
     return initiatePathing(start, target, context)
   }
 
   override fun abort() {
-    this.abortRequested = true
+    this.abortRequested.set(true)
   }
 
   override fun registerPathfindingHook(hook: PathfinderHook) {
@@ -92,12 +94,17 @@ abstract class AbstractPathfinder(
 
     return if (pathfinderConfiguration.async) {
       CompletableFuture.supplyAsync(
-        { executePathingAlgorithm(effectiveStart, effectiveTarget, environmentContext) },
+        {
+          executePathingAlgorithm(effectiveStart, effectiveTarget, environmentContext)
+        },
         PATHING_EXECUTOR_SERVICE
-      ).exceptionally { throwable -> handlePathingException(start, target, throwable) }
+      )
+        .exceptionally { throwable -> handlePathingException(start, target, throwable) }
     } else {
       try {
-        CompletableFuture.completedFuture(executePathingAlgorithm(effectiveStart, effectiveTarget, environmentContext))
+        CompletableFuture.completedFuture(
+          executePathingAlgorithm(effectiveStart, effectiveTarget, environmentContext)
+        )
       } catch (e: Exception) {
         CompletableFuture.completedFuture(handlePathingException(start, target, e))
       }
@@ -111,13 +118,14 @@ abstract class AbstractPathfinder(
   ): PathfinderResult {
     initializeSearch()
 
-    val searchContext = SearchContextImpl(
-      start,
-      target,
-      this.pathfinderConfiguration,
-      this.navigationPointProvider,
-      environmentContext
-    )
+    val searchContext =
+      SearchContextImpl(
+        start,
+        target,
+        this.pathfinderConfiguration,
+        this.navigationPointProvider,
+        environmentContext
+      )
 
     val processors = getProcessors()
 
@@ -125,26 +133,31 @@ abstract class AbstractPathfinder(
       processors.forEach { it.initializeSearch(searchContext) }
 
       val startNode = createStartNode(start, target)
-      val startNodeContext = EvaluationContextImpl(
-        searchContext,
-        startNode,
-        null,
-        pathfinderConfiguration.heuristicStrategy
-      )
+      val startNodeContext =
+        EvaluationContextImpl(
+          searchContext,
+          startNode,
+          null,
+          pathfinderConfiguration.heuristicStrategy
+        )
 
       if (!validationProcessors.isNullOrEmpty()) {
         val isStartNodeInvalid = validationProcessors.any { !it.isValid(startNodeContext) }
         if (isStartNodeInvalid) {
-          return PathfinderResultImpl(PathState.FAILED, PathImpl(start, target, EMPTY_PATH_POSITIONS))
+          return PathfinderResultImpl(
+            PathState.FAILED,
+            PathImpl(start, target, EMPTY_PATH_POSITIONS)
+          )
         }
       }
 
       val openSet = PrimitiveMinHeap(1024)
-      val startKey = try {
-        calculateHeapKey(startNode, startNode.getFCost())
-      } catch (t: Throwable) {
-        startNode.getFCost()
-      }
+      val startKey =
+        try {
+          calculateHeapKey(startNode, startNode.getFCost())
+        } catch (t: Throwable) {
+          startNode.getFCost()
+        }
 
       insertStartNode(startNode, startKey, openSet)
 
@@ -154,7 +167,7 @@ abstract class AbstractPathfinder(
       while (!openSet.isEmpty() && currentDepth < pathfinderConfiguration.maxIterations) {
         currentDepth++
 
-        if (this.abortRequested) {
+        if (this.abortRequested.get()) {
           return createAbortedResult(start, target, bestFallbackNode)
         }
 
@@ -162,7 +175,9 @@ abstract class AbstractPathfinder(
         markNodeAsExpanded(currentNode)
 
         pathfinderHooks.forEach { hook ->
-          hook.onPathfindingStep(PathfindingContext(currentNode.getPosition(), Depth.of(currentDepth)))
+          hook.onPathfindingStep(
+            PathfindingContext(currentNode.getPosition(), Depth.of(currentDepth))
+          )
         }
 
         if (currentNode.getHeuristic() < bestFallbackNode.getHeuristic()) {
@@ -170,7 +185,10 @@ abstract class AbstractPathfinder(
         }
 
         if (hasReachedPathLengthLimit(currentNode)) {
-          return PathfinderResultImpl(PathState.LENGTH_LIMITED, reconstructPath(start, target, currentNode))
+          return PathfinderResultImpl(
+            PathState.LENGTH_LIMITED,
+            reconstructPath(start, target, currentNode)
+          )
         }
 
         if (currentNode.isTarget(target)) {
@@ -181,7 +199,6 @@ abstract class AbstractPathfinder(
       }
 
       return determinePostLoopResult(currentDepth, start, target, bestFallbackNode)
-
     } catch (e: Exception) {
       return PathfinderResultImpl(PathState.FAILED, PathImpl(start, target, EMPTY_PATH_POSITIONS))
     } finally {
@@ -218,17 +235,24 @@ abstract class AbstractPathfinder(
     return processors
   }
 
-  private fun createAbortedResult(start: PathPosition, target: PathPosition, fallbackNode: Node): PathfinderResult {
-    this.abortRequested = false
+  private fun createAbortedResult(
+    start: PathPosition,
+    target: PathPosition,
+    fallbackNode: Node,
+  ): PathfinderResult {
+    this.abortRequested.set(false)
     return PathfinderResultImpl(PathState.ABORTED, reconstructPath(start, target, fallbackNode))
   }
 
   private fun handlePathingException(
     originalStart: PathPosition,
     originalTarget: PathPosition,
-    throwable: Throwable,
+    @Suppress("UNUSED_PARAMETER") throwable: Throwable,
   ): PathfinderResult {
-    return PathfinderResultImpl(PathState.FAILED, PathImpl(originalStart, originalTarget, EMPTY_PATH_POSITIONS))
+    return PathfinderResultImpl(
+      PathState.FAILED,
+      PathImpl(originalStart, originalTarget, EMPTY_PATH_POSITIONS)
+    )
   }
 
   protected fun createStartNode(startPos: PathPosition, targetPos: PathPosition): Node {
@@ -255,7 +279,10 @@ abstract class AbstractPathfinder(
   ): PathfinderResult {
     return when {
       depthReached >= pathfinderConfiguration.maxIterations -> {
-        PathfinderResultImpl(PathState.MAX_ITERATIONS_REACHED, reconstructPath(start, target, fallbackNode))
+        PathfinderResultImpl(
+          PathState.MAX_ITERATIONS_REACHED,
+          reconstructPath(start, target, fallbackNode)
+        )
       }
 
       pathfinderConfiguration.fallback -> {
@@ -278,15 +305,10 @@ abstract class AbstractPathfinder(
   }
 
   private fun tracePathPositionsFromNode(leafNode: Node): List<PathPosition> {
-    val path = mutableListOf<PathPosition>()
-    var currentNode: Node? = leafNode
-
-    while (currentNode != null) {
-      path.add(currentNode.getPosition())
-      currentNode = currentNode.getParent()
-    }
-
-    return path.reversed()
+    return generateSequence(leafNode) { it.getParent() }
+      .map { it.getPosition() }
+      .toList()
+      .reversed()
   }
 
   protected abstract fun insertStartNode(node: Node, fCost: Double, openSet: PrimitiveMinHeap)

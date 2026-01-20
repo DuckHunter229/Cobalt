@@ -11,7 +11,6 @@ import org.cobalt.api.pathfinder.Node
 import org.cobalt.api.pathfinder.pathfinder.heap.PrimitiveMinHeap
 import org.cobalt.api.pathfinder.pathfinder.processing.EvaluationContextImpl
 import org.cobalt.api.pathfinder.pathing.configuration.PathfinderConfiguration
-import org.cobalt.api.pathfinder.pathing.processing.Cost
 import org.cobalt.api.pathfinder.pathing.processing.context.EvaluationContext
 import org.cobalt.api.pathfinder.pathing.processing.context.SearchContext
 import org.cobalt.api.pathfinder.util.GridRegionData
@@ -42,8 +41,8 @@ class AStarPathfinder(configuration: PathfinderConfiguration) : AbstractPathfind
   }
 
   override fun processSuccessors(
-    start: PathPosition,
-    target: PathPosition,
+    requestStart: PathPosition,
+    requestTarget: PathPosition,
     currentNode: Node,
     openSet: PrimitiveMinHeap,
     searchContext: SearchContext,
@@ -70,13 +69,15 @@ class AStarPathfinder(configuration: PathfinderConfiguration) : AbstractPathfind
         if (pathfinderConfiguration.shouldReopenClosedNodes()) {
           val oldCost = session.closedSetGCosts[packedPos]
 
-          val tempNeighbor = createNeighborNode(neighborPos, start, target, currentNode)
-          val context = EvaluationContextImpl(
-            searchContext,
-            tempNeighbor,
-            currentNode,
-            pathfinderConfiguration.heuristicStrategy
-          )
+          val tempNeighbor =
+            createNeighborNode(neighborPos, requestStart, requestTarget, currentNode)
+          val context =
+            EvaluationContextImpl(
+              searchContext,
+              tempNeighbor,
+              currentNode,
+              pathfinderConfiguration.heuristicStrategy
+            )
           val newGCost = calculateGCost(context)
 
           if (oldCost.isNaN() || newGCost + Math.ulp(newGCost) < oldCost) {
@@ -88,15 +89,16 @@ class AStarPathfinder(configuration: PathfinderConfiguration) : AbstractPathfind
         if (!shouldReopen) continue
       }
 
-      val neighbor = createNeighborNode(neighborPos, start, target, currentNode)
+      val neighbor = createNeighborNode(neighborPos, requestStart, requestTarget, currentNode)
       neighbor.setParent(currentNode)
 
-      val context = EvaluationContextImpl(
-        searchContext,
-        neighbor,
-        currentNode,
-        pathfinderConfiguration.heuristicStrategy
-      )
+      val context =
+        EvaluationContextImpl(
+          searchContext,
+          neighbor,
+          currentNode,
+          pathfinderConfiguration.heuristicStrategy
+        )
 
       if (!isValidByCustomProcessors(context)) {
         continue
@@ -119,12 +121,13 @@ class AStarPathfinder(configuration: PathfinderConfiguration) : AbstractPathfind
     searchContext: SearchContext,
     openSet: PrimitiveMinHeap,
   ) {
-    val context = EvaluationContextImpl(
-      searchContext,
-      existing,
-      currentNode,
-      pathfinderConfiguration.heuristicStrategy
-    )
+    val context =
+      EvaluationContextImpl(
+        searchContext,
+        existing,
+        currentNode,
+        pathfinderConfiguration.heuristicStrategy
+      )
 
     val newG = calculateGCost(context)
     val tol = Math.ulp(max(abs(newG), abs(existing.getGCost())))
@@ -179,20 +182,10 @@ class AStarPathfinder(configuration: PathfinderConfiguration) : AbstractPathfind
 
   private fun calculateGCost(context: EvaluationContext): Double {
     val baseCost = context.getBaseTransitionCost()
-    var additionalCost = 0.0
+    val additionalCost =
+      costProcessors?.sumOf { it.calculateCostContribution(context).value } ?: 0.0
 
-    if (!costProcessors.isNullOrEmpty()) {
-      for (processor in costProcessors) {
-        val contribution = processor.calculateCostContribution(context)
-        additionalCost += contribution?.value ?: Cost.ZERO.value
-      }
-    }
-
-    var transitionCost = baseCost + additionalCost
-    if (transitionCost < 0) {
-      transitionCost = 0.0
-    }
-
+    val transitionCost = max(0.0, baseCost + additionalCost)
     return context.getPathCostToPreviousPosition() + transitionCost
   }
 
@@ -218,15 +211,16 @@ class AStarPathfinder(configuration: PathfinderConfiguration) : AbstractPathfind
 
   private fun getSessionOrThrow(): PathfindingSession {
     return currentSession.get()
-      ?: throw IllegalStateException("Pathfinding session not initialized. Call initializeSearch() first.")
+      ?: throw IllegalStateException(
+        "Pathfinding session not initialized. Call initializeSearch() first."
+      )
   }
 
   private inner class PathfindingSession {
     val visitedRegions: Long2ObjectMap<GridRegionData> = Long2ObjectOpenHashMap()
     val openSetNodes: Long2ObjectMap<Node> = Long2ObjectOpenHashMap()
-    val closedSetGCosts: Long2DoubleMap = Long2DoubleOpenHashMap().apply {
-      defaultReturnValue(Double.NaN)
-    }
+    val closedSetGCosts: Long2DoubleMap =
+      Long2DoubleOpenHashMap().apply { defaultReturnValue(Double.NaN) }
 
     fun getOrCreateRegionData(position: PathPosition): GridRegionData {
       val cellSize = pathfinderConfiguration.gridCellSize
@@ -235,9 +229,10 @@ class AStarPathfinder(configuration: PathfinderConfiguration) : AbstractPathfind
       val rZ = Mth.floorDiv(position.getFlooredZ(), cellSize)
       val regionKey = RegionKey.pack(rX, rY, rZ)
 
-      return visitedRegions.computeIfAbsent(regionKey) {
-        GridRegionData(pathfinderConfiguration)
-      }
+      return visitedRegions.computeIfAbsent(
+        regionKey,
+        java.util.function.LongFunction { GridRegionData(pathfinderConfiguration) }
+      )
     }
   }
 }
