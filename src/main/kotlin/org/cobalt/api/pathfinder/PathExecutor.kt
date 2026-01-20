@@ -70,14 +70,14 @@ object PathExecutor {
           )
         } else {
           /*
-          * partial paths can happen, i would recommend improving this functionality
-          * to whoever maintainer wants to maintain my horrible shitcode of a pathfinder.
-          * i think partial paths should be refactored, i will write all the cases now
-          * iteration limit -> self explanatory xd (or if u cant use ur brain
-          * then its just if the algorithm takes too many iterations to find a goal.
-          * this is set literaaally like 20 lines above you...)
-          * fallback -> pf searches everywhere and couldnt find a possible way to get there.
-          * this can happen in the case of unloaded chunks, or an obstruction
+           * partial paths can happen, i would recommend improving this functionality
+           * to whoever maintainer wants to maintain my horrible shitcode of a pathfinder.
+           * i think partial paths should be refactored, i will write all the cases now
+           * iteration limit -> self explanatory xd (or if u cant use ur brain
+           * then its just if the algorithm takes too many iterations to find a goal.
+           * this is set literaaally like 20 lines above you...)
+           * fallback -> pf searches everywhere and couldnt find a possible way to get there.
+           * this can happen in the case of unloaded chunks, or an obstruction
            */
           ChatUtils.sendMessage(
             "§ePartial path found! §7Calculated in §f${duration}ms §8(${path.length()} nodes)"
@@ -95,10 +95,10 @@ object PathExecutor {
   }
 
   /*
-  * as of writing this, there is intentionally no moving, rotations,
-  * or jumping yet. i ask that you make sure that the algo works good
-  * before implementing them, aswell as rots
-  */
+   * as of writing this, there is intentionally no moving, rotations,
+   * or jumping yet. i ask that you make sure that the algo works good
+   * before implementing them, aswell as rots
+   */
   @SubscribeEvent
   fun onTick(@Suppress("UNUSED_PARAMETER") event: TickEvent.Start) {
     val path = currentPath ?: return
@@ -112,7 +112,7 @@ object PathExecutor {
     }
 
     val targetPos = waypoints[currentWaypointIndex].mid()
-    val targetVec = Vec3(targetPos.getX(), targetPos.getY(), targetPos.getZ())
+    val targetVec = Vec3(targetPos.x, targetPos.y, targetPos.z)
 
     val horizontalDistSq =
       (player.x - targetVec.x) * (player.x - targetVec.x) +
@@ -135,8 +135,8 @@ object PathExecutor {
 
       Render3D.drawLine(
         event.context,
-        Vec3(start.getX(), start.getY(), start.getZ()),
-        Vec3(end.getX(), end.getY(), end.getZ()),
+        Vec3(start.x, start.y, start.z),
+        Vec3(end.x, end.y, end.z),
         Color.CYAN,
         true,
         2.0f
@@ -148,12 +148,12 @@ object PathExecutor {
       Render3D.drawBox(
         event.context,
         AABB(
-          currentPos.getX() - 0.25,
-          currentPos.getY() - 0.25,
-          currentPos.getZ() - 0.25,
-          currentPos.getX() + 0.25,
-          currentPos.getY() + 0.25,
-          currentPos.getZ() + 0.25
+          currentPos.x - 0.25,
+          currentPos.y - 0.25,
+          currentPos.z - 0.25,
+          currentPos.x + 0.25,
+          currentPos.y + 0.25,
+          currentPos.z + 0.25
         ),
         Color.GREEN,
         true

@@ -224,9 +224,9 @@ class AStarPathfinder(configuration: PathfinderConfiguration) : AbstractPathfind
 
     fun getOrCreateRegionData(position: PathPosition): GridRegionData {
       val cellSize = pathfinderConfiguration.gridCellSize
-      val rX = Mth.floorDiv(position.getFlooredX(), cellSize)
-      val rY = Mth.floorDiv(position.getFlooredY(), cellSize)
-      val rZ = Mth.floorDiv(position.getFlooredZ(), cellSize)
+      val rX = Mth.floorDiv(position.flooredX, cellSize)
+      val rY = Mth.floorDiv(position.flooredY, cellSize)
+      val rZ = Mth.floorDiv(position.flooredZ, cellSize)
       val regionKey = RegionKey.pack(rX, rY, rZ)
 
       return visitedRegions.computeIfAbsent(

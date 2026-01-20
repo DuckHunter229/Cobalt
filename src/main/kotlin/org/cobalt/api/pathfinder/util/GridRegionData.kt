@@ -12,20 +12,20 @@ class GridRegionData {
   private val regionalExaminedPositions: LongSet
 
   constructor(bloomFilterSize: Int, bloomFilterFpp: Double) {
-    val pathPositionFunnel = Funnel<PathPosition> { pathPosition, into ->
-      into.putInt(pathPosition.getFlooredX())
-        .putInt(pathPosition.getFlooredY())
-        .putInt(pathPosition.getFlooredZ())
-    }
+    val pathPositionFunnel =
+      Funnel<PathPosition> { pathPosition, into ->
+        into.putInt(pathPosition.flooredX)
+          .putInt(pathPosition.flooredY)
+          .putInt(pathPosition.flooredZ)
+      }
 
     bloomFilter = BloomFilter.create(pathPositionFunnel, bloomFilterSize, bloomFilterFpp)
     this.regionalExaminedPositions = LongOpenHashSet()
   }
 
-  constructor(configuration: PathfinderConfiguration) : this(
-    configuration.bloomFilterSize,
-    configuration.bloomFilterFpp
-  )
+  constructor(
+    configuration: PathfinderConfiguration,
+  ) : this(configuration.bloomFilterSize, configuration.bloomFilterFpp)
 
   fun getBloomFilter(): BloomFilter<PathPosition> = bloomFilter
 

@@ -20,21 +20,9 @@ class SquaredHeuristicStrategy : IHeuristicStrategy {
 
   private val octileCalc =
     DistanceCalculator<Double> { progress ->
-      val dx =
-        abs(
-          progress.currentPosition().getFlooredX() -
-            progress.targetPosition().getFlooredX()
-        )
-      val dy =
-        abs(
-          progress.currentPosition().getFlooredY() -
-            progress.targetPosition().getFlooredY()
-        )
-      val dz =
-        abs(
-          progress.currentPosition().getFlooredZ() -
-            progress.targetPosition().getFlooredZ()
-        )
+      val dx = abs(progress.currentPosition().flooredX - progress.targetPosition().flooredX)
+      val dy = abs(progress.currentPosition().flooredY - progress.targetPosition().flooredY)
+      val dz = abs(progress.currentPosition().flooredZ - progress.targetPosition().flooredZ)
 
       val min = minOf(dx, dy, dz)
       val max = maxOf(dx, dy, dz)
@@ -50,18 +38,16 @@ class SquaredHeuristicStrategy : IHeuristicStrategy {
       val t = progress.targetPosition()
 
       val manhattan =
-        abs(c.getFlooredX() - t.getFlooredX()) +
-          abs(c.getFlooredY() - t.getFlooredY()) +
-          abs(c.getFlooredZ() - t.getFlooredZ())
+        abs(c.flooredX - t.flooredX) +
+          abs(c.flooredY - t.flooredY) +
+          abs(c.flooredZ - t.flooredZ)
 
       (manhattan * manhattan).toDouble()
     }
 
   private val heightCalc =
     DistanceCalculator<Double> { progress ->
-      val dy =
-        progress.currentPosition().getFlooredY() -
-          progress.targetPosition().getFlooredY()
+      val dy = progress.currentPosition().flooredY - progress.targetPosition().flooredY
       (dy * dy).toDouble()
     }
 
@@ -76,9 +62,9 @@ class SquaredHeuristicStrategy : IHeuristicStrategy {
   }
 
   override fun calculateTransitionCost(from: PathPosition, to: PathPosition): Double {
-    val dx = to.getCenteredX() - from.getCenteredX()
-    val dy = to.getCenteredY() - from.getCenteredY()
-    val dz = to.getCenteredZ() - from.getCenteredZ()
+    val dx = to.centeredX - from.centeredX
+    val dy = to.centeredY - from.centeredY
+    val dz = to.centeredZ - from.centeredZ
 
     return dx * dx + dy * dy + dz * dz
   }

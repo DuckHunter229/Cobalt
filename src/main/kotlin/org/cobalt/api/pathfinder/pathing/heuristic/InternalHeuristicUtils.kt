@@ -11,15 +11,15 @@ internal object InternalHeuristicUtils {
     val c = progress.currentPosition()
     val t = progress.targetPosition()
 
-    val sx = s.getCenteredX()
-    val sy = s.getCenteredY()
-    val sz = s.getCenteredZ()
-    val cx = c.getCenteredX()
-    val cy = c.getCenteredY()
-    val cz = c.getCenteredZ()
-    val tx = t.getCenteredX()
-    val ty = t.getCenteredY()
-    val tz = t.getCenteredZ()
+    val sx = s.centeredX
+    val sy = s.centeredY
+    val sz = s.centeredZ
+    val cx = c.centeredX
+    val cy = c.centeredY
+    val cz = c.centeredZ
+    val tx = t.centeredX
+    val ty = t.centeredY
+    val tz = t.centeredZ
 
     val lineX = tx - sx
     val lineY = ty - sy

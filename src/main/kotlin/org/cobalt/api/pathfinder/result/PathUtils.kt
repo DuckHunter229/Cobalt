@@ -17,9 +17,7 @@ object PathUtils {
     var previous: PathPosition? = null
 
     for (current in path) {
-      previous?.let { prev ->
-        interpolateSegment(prev, current, resolution, result)
-      }
+      previous?.let { prev -> interpolateSegment(prev, current, resolution, result) }
       result.addLast(current)
       previous = current
     }
@@ -97,9 +95,9 @@ object PathUtils {
   }
 
   private fun interpolate(pos1: PathPosition, pos2: PathPosition, progress: Double): PathPosition {
-    val x = Mth.lerp(progress, pos1.getX(), pos2.getX())
-    val y = Mth.lerp(progress, pos1.getY(), pos2.getY())
-    val z = Mth.lerp(progress, pos1.getZ(), pos2.getZ())
+    val x = Mth.lerp(progress, pos1.x, pos2.x)
+    val y = Mth.lerp(progress, pos1.y, pos2.y)
+    val z = Mth.lerp(progress, pos1.z, pos2.z)
     return PathPosition(x, y, z)
   }
 
@@ -126,9 +124,7 @@ object PathUtils {
   }
 
   private fun samePoint(a: PathPosition, b: PathPosition, eps: Double): Boolean {
-    return abs(a.getX() - b.getX()) <= eps &&
-      abs(a.getY() - b.getY()) <= eps &&
-      abs(a.getZ() - b.getZ()) <= eps
+    return abs(a.x - b.x) <= eps && abs(a.y - b.y) <= eps && abs(a.z - b.z) <= eps
   }
 
   private fun validateEpsilon(epsilon: Double) {

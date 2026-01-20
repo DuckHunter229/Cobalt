@@ -6,10 +6,8 @@ import org.cobalt.api.pathfinder.wrapper.PathPosition
 class PathImpl(
   private val start: PathPosition,
   private val end: PathPosition,
-  private val positions: Iterable<PathPosition>,
+  private val positions: Collection<PathPosition>,
 ) : Path {
-
-  private val length: Int = positions.count()
 
   override fun getStart(): PathPosition = start
 
@@ -17,11 +15,7 @@ class PathImpl(
 
   override fun iterator(): Iterator<PathPosition> = positions.iterator()
 
-  override fun length(): Int = length
+  override fun length(): Int = positions.size
 
-  override fun collect(): Collection<PathPosition> {
-    val collection = ArrayList<PathPosition>(length)
-    positions.forEach { collection.add(it) }
-    return collection
-  }
+  override fun collect(): Collection<PathPosition> = positions.toList()
 }

@@ -9,11 +9,11 @@ import org.cobalt.api.pathfinder.pathing.processing.ValidationProcessor
 import org.cobalt.api.pathfinder.pathing.processing.context.EvaluationContext
 
 /*
-* most logic in this file is derived from minecraft code
-* or writeups on pathfinding algorithms, if you want to help contribute
-* id prefer for you to keep it the same idea or whatever, but if not
-* please write a comment explaining WHY you did it that way. i dont like
-* magic numbers that i cant understand.
+ * most logic in this file is derived from minecraft code
+ * or writeups on pathfinding algorithms, if you want to help contribute
+ * id prefer for you to keep it the same idea or whatever, but if not
+ * please write a comment explaining WHY you did it that way. i dont like
+ * magic numbers that i cant understand.
  */
 class MinecraftPathProcessor : CostProcessor, ValidationProcessor {
 
@@ -35,9 +35,9 @@ class MinecraftPathProcessor : CostProcessor, ValidationProcessor {
     if (prev == null) return true
 
     val prevPoint = provider.getNavigationPoint(prev, env)
-    val dy = pos.getY() - prev.getY()
-    val dx = pos.getFlooredX() - prev.getFlooredX()
-    val dz = pos.getFlooredZ() - prev.getFlooredZ()
+    val dy = pos.y - prev.y
+    val dx = pos.flooredX - prev.flooredX
+    val dz = pos.flooredZ - prev.flooredZ
 
     if (dy > DEFAULT_MOB_JUMP_HEIGHT) return false
 
@@ -86,8 +86,7 @@ class MinecraftPathProcessor : CostProcessor, ValidationProcessor {
       additionalCost += 0.1 * Math.abs(dy)
     }
 
-    val blockPos =
-      BlockPos(currentPos.getFlooredX(), currentPos.getFlooredY(), currentPos.getFlooredZ())
+    val blockPos = BlockPos(currentPos.flooredX, currentPos.flooredY, currentPos.flooredZ)
 
     // i dont want it to like tight corners so more cost
     var crampedPenalty = 0.0
@@ -105,14 +104,13 @@ class MinecraftPathProcessor : CostProcessor, ValidationProcessor {
     }
     additionalCost += crampedPenalty
 
-
     // just make stuff smoother no more zigzags
     val gpPos = context.getGrandparentPathPosition()
     if (gpPos != null) {
-      val v1x = prevPos.getX() - gpPos.getX()
-      val v1z = prevPos.getZ() - gpPos.getZ()
-      val v2x = currentPos.getX() - prevPos.getX()
-      val v2z = currentPos.getZ() - prevPos.getZ()
+      val v1x = prevPos.x - gpPos.x
+      val v1z = prevPos.z - gpPos.z
+      val v2x = currentPos.x - prevPos.x
+      val v2z = currentPos.z - prevPos.z
       val dot = v1x * v2x + v1z * v2z
       val mag1 = sqrt(v1x * v1x + v1z * v1z)
       val mag2 = sqrt(v2x * v2x + v2z * v2z)

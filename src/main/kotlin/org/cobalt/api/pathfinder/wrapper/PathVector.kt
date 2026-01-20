@@ -3,11 +3,7 @@ package org.cobalt.api.pathfinder.wrapper
 import kotlin.math.sqrt
 import net.minecraft.util.Mth
 
-data class PathVector(
-  private val x: Double,
-  private val y: Double,
-  private val z: Double,
-) : Cloneable {
+data class PathVector(val x: Double, val y: Double, val z: Double) {
 
   companion object {
     fun computeDistance(A: PathVector, B: PathVector, C: PathVector): Double {
@@ -19,63 +15,34 @@ data class PathVector(
     }
   }
 
-  fun dot(otherVector: PathVector): Double {
-    return this.x * otherVector.x + this.y * otherVector.y + this.z * otherVector.z
-  }
+  fun dot(other: PathVector): Double = x * other.x + y * other.y + z * other.z
 
-  fun length(): Double {
-    return sqrt(Mth.square(this.x) + Mth.square(this.y) + Mth.square(this.z))
-  }
+  fun length(): Double = sqrt(Mth.square(x) + Mth.square(y) + Mth.square(z))
 
-  fun distance(otherVector: PathVector): Double {
-    return sqrt(
-      Mth.square(this.x - otherVector.x) +
-        Mth.square(this.y - otherVector.y) +
-        Mth.square(this.z - otherVector.z)
-    )
-  }
+  fun distance(other: PathVector): Double =
+    sqrt(Mth.square(x - other.x) + Mth.square(y - other.y) + Mth.square(z - other.z))
 
-  fun setX(x: Double): PathVector = PathVector(x, this.y, this.z)
+  fun setX(x: Double): PathVector = copy(x = x)
+  fun setY(y: Double): PathVector = copy(y = y)
+  fun setZ(z: Double): PathVector = copy(z = z)
 
-  fun setY(y: Double): PathVector = PathVector(this.x, y, this.z)
+  fun subtract(other: PathVector): PathVector = PathVector(x - other.x, y - other.y, z - other.z)
 
-  fun setZ(z: Double): PathVector = PathVector(this.x, this.y, z)
-
-  fun subtract(otherVector: PathVector): PathVector {
-    return PathVector(this.x - otherVector.x, this.y - otherVector.y, this.z - otherVector.z)
-  }
-
-  fun multiply(value: Double): PathVector {
-    return PathVector(this.x * value, this.y * value, this.z * value)
-  }
+  fun multiply(value: Double): PathVector = PathVector(x * value, y * value, z * value)
 
   fun normalize(): PathVector {
-    val magnitude = this.length()
-    return PathVector(this.x / magnitude, this.y / magnitude, this.z / magnitude)
+    val magnitude = length()
+    return PathVector(x / magnitude, y / magnitude, z / magnitude)
   }
 
-  fun divide(value: Double): PathVector {
-    return PathVector(this.x / value, this.y / value, this.z / value)
-  }
+  fun divide(value: Double): PathVector = PathVector(x / value, y / value, z / value)
 
-  fun add(otherVector: PathVector): PathVector {
-    return PathVector(this.x + otherVector.x, this.y + otherVector.y, this.z + otherVector.z)
-  }
+  fun add(other: PathVector): PathVector = PathVector(x + other.x, y + other.y, z + other.z)
 
   fun getCrossProduct(o: PathVector): PathVector {
-    val x = this.y * o.getZ() - o.getY() * this.z
-    val y = this.z * o.getX() - o.getZ() * this.x
-    val z = this.x * o.getY() - o.getX() * this.y
-    return PathVector(x, y, z)
+    val crossX = y * o.z - o.y * z
+    val crossY = z * o.x - o.z * x
+    val crossZ = x * o.y - o.x * y
+    return PathVector(crossX, crossY, crossZ)
   }
-
-  public override fun clone(): PathVector {
-    return PathVector(this.x, this.y, this.z)
-  }
-
-  fun getX(): Double = this.x
-
-  fun getY(): Double = this.y
-
-  fun getZ(): Double = this.z
 }
