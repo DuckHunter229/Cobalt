@@ -13,72 +13,57 @@ class SquaredHeuristicStrategy : IHeuristicStrategy {
     private val D3 = sqrt(3.0)
   }
 
-  private val perpendicularCalc = DistanceCalculator<Double> { progress ->
-    val s = progress.startPosition()
-    val c = progress.currentPosition()
-    val t = progress.targetPosition()
-
-    val sx = s.getCenteredX()
-    val sy = s.getCenteredY()
-    val sz = s.getCenteredZ()
-    val cx = c.getCenteredX()
-    val cy = c.getCenteredY()
-    val cz = c.getCenteredZ()
-    val tx = t.getCenteredX()
-    val ty = t.getCenteredY()
-    val tz = t.getCenteredZ()
-
-    val lineX = tx - sx
-    val lineY = ty - sy
-    val lineZ = tz - sz
-    val lineSq = lineX * lineX + lineY * lineY + lineZ * lineZ
-
-    if (lineSq < EPSILON) {
-      val dx = cx - sx
-      val dy = cy - sy
-      val dz = cz - sz
-      return@DistanceCalculator dx * dx + dy * dy + dz * dz
+  private val perpendicularCalc =
+    DistanceCalculator<Double> { progress ->
+      InternalHeuristicUtils.calculatePerpendicularDistanceSq(progress)
     }
 
-    val toX = cx - sx
-    val toY = cy - sy
-    val toZ = cz - sz
-    val crossX = toY * lineZ - toZ * lineY
-    val crossY = toZ * lineX - toX * lineZ
-    val crossZ = toX * lineY - toY * lineX
-    val crossSq = crossX * crossX + crossY * crossY + crossZ * crossZ
+  private val octileCalc =
+    DistanceCalculator<Double> { progress ->
+      val dx =
+        abs(
+          progress.currentPosition().getFlooredX() -
+            progress.targetPosition().getFlooredX()
+        )
+      val dy =
+        abs(
+          progress.currentPosition().getFlooredY() -
+            progress.targetPosition().getFlooredY()
+        )
+      val dz =
+        abs(
+          progress.currentPosition().getFlooredZ() -
+            progress.targetPosition().getFlooredZ()
+        )
 
-    crossSq / lineSq
-  }
+      val min = minOf(dx, dy, dz)
+      val max = maxOf(dx, dy, dz)
+      val mid = dx + dy + dz - min - max
 
-  private val octileCalc = DistanceCalculator<Double> { progress ->
-    val dx = abs(progress.currentPosition().getFlooredX() - progress.targetPosition().getFlooredX())
-    val dy = abs(progress.currentPosition().getFlooredY() - progress.targetPosition().getFlooredY())
-    val dz = abs(progress.currentPosition().getFlooredZ() - progress.targetPosition().getFlooredZ())
+      val octile = (D3 - D2) * min + (D2 - D1) * mid + D1 * max
+      octile * octile
+    }
 
-    val min = minOf(dx, dy, dz)
-    val max = maxOf(dx, dy, dz)
-    val mid = dx + dy + dz - min - max
+  private val manhattanCalc =
+    DistanceCalculator<Double> { progress ->
+      val c = progress.currentPosition()
+      val t = progress.targetPosition()
 
-    val octile = (D3 - D2) * min + (D2 - D1) * mid + D1 * max
-    octile * octile
-  }
+      val manhattan =
+        abs(c.getFlooredX() - t.getFlooredX()) +
+          abs(c.getFlooredY() - t.getFlooredY()) +
+          abs(c.getFlooredZ() - t.getFlooredZ())
 
-  private val manhattanCalc = DistanceCalculator<Double> { progress ->
-    val c = progress.currentPosition()
-    val t = progress.targetPosition()
+      (manhattan * manhattan).toDouble()
+    }
 
-    val manhattan = abs(c.getFlooredX() - t.getFlooredX()) +
-      abs(c.getFlooredY() - t.getFlooredY()) +
-      abs(c.getFlooredZ() - t.getFlooredZ())
-
-    (manhattan * manhattan).toDouble()
-  }
-
-  private val heightCalc = DistanceCalculator<Double> { progress ->
-    val dy = progress.currentPosition().getFlooredY() - progress.targetPosition().getFlooredY()
-    (dy * dy).toDouble()
-  }
+  private val heightCalc =
+    DistanceCalculator<Double> { progress ->
+      val dy =
+        progress.currentPosition().getFlooredY() -
+          progress.targetPosition().getFlooredY()
+      (dy * dy).toDouble()
+    }
 
   override fun calculate(context: HeuristicContext): Double {
     val p = context.getPathfindingProgress()
