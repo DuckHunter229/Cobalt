@@ -7,19 +7,18 @@ import org.cobalt.api.pathfinder.wrapper.PathPosition
 
 class SquaredHeuristicStrategy : IHeuristicStrategy {
   companion object {
-    private const val EPSILON = 1e-9
     private const val D1 = 1.0
     private val D2 = sqrt(2.0)
     private val D3 = sqrt(3.0)
   }
 
   private val perpendicularCalc =
-    DistanceCalculator<Double> { progress ->
+    DistanceCalculator { progress ->
       InternalHeuristicUtils.calculatePerpendicularDistanceSq(progress)
     }
 
   private val octileCalc =
-    DistanceCalculator<Double> { progress ->
+    DistanceCalculator { progress ->
       val dx = abs(progress.currentPosition().flooredX - progress.targetPosition().flooredX)
       val dy = abs(progress.currentPosition().flooredY - progress.targetPosition().flooredY)
       val dz = abs(progress.currentPosition().flooredZ - progress.targetPosition().flooredZ)
@@ -33,7 +32,7 @@ class SquaredHeuristicStrategy : IHeuristicStrategy {
     }
 
   private val manhattanCalc =
-    DistanceCalculator<Double> { progress ->
+    DistanceCalculator { progress ->
       val c = progress.currentPosition()
       val t = progress.targetPosition()
 
@@ -46,7 +45,7 @@ class SquaredHeuristicStrategy : IHeuristicStrategy {
     }
 
   private val heightCalc =
-    DistanceCalculator<Double> { progress ->
+    DistanceCalculator { progress ->
       val dy = progress.currentPosition().flooredY - progress.targetPosition().flooredY
       (dy * dy).toDouble()
     }

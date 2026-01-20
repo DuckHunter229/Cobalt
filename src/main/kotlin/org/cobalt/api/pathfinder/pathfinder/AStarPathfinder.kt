@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.longs.Long2DoubleMap
 import it.unimi.dsi.fastutil.longs.Long2DoubleOpenHashMap
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
+import java.util.function.LongFunction
 import kotlin.math.abs
 import kotlin.math.max
 import net.minecraft.util.Mth
@@ -231,7 +232,7 @@ class AStarPathfinder(configuration: PathfinderConfiguration) : AbstractPathfind
 
       return visitedRegions.computeIfAbsent(
         regionKey,
-        java.util.function.LongFunction { GridRegionData(pathfinderConfiguration) }
+        LongFunction { GridRegionData(pathfinderConfiguration) }
       )
     }
   }

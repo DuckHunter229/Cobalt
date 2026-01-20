@@ -7,7 +7,6 @@ import org.cobalt.api.pathfinder.wrapper.PathPosition
 
 class LinearHeuristicStrategy : IHeuristicStrategy {
   companion object {
-    private const val EPSILON = 1e-9
     private const val D1 = 1.0
     private val D2 = sqrt(2.0)
     private val D3 = sqrt(3.0)
