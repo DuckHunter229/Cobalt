@@ -52,8 +52,8 @@ object AddonLoader {
       Files.newDirectoryStream(addonsDir, "*.jar").use { stream ->
         for (jarPath in stream) {
           try {
-            loadAddon(jarPath)
             FabricLauncherBase.getLauncher().addToClassPath(jarPath)
+            loadAddon(jarPath)
           } catch (e: Exception) {
             e.printStackTrace()
           }
