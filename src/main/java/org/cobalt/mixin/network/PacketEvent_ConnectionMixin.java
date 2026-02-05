@@ -18,17 +18,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Connection.class)
 public class PacketEvent_ConnectionMixin {
 
-  @Shadow
-  private static <T extends PacketListener> void genericsFtw(Packet<T> packet, PacketListener listener) {
-  }
-
   @Inject(method = "genericsFtw", at = @At("HEAD"), cancellable = true)
   private static void onPacketReceived(Packet<?> packet, PacketListener listener, CallbackInfo ci) {
-
-    if (packet instanceof ClientboundBundlePacket) {
-      return;
-    }
-
     PacketEvent.Incoming event = new PacketEvent.Incoming(packet);
     event.post();
 
