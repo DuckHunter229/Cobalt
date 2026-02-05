@@ -1,6 +1,8 @@
 package org.cobalt.api.pathfinder.pathing.processing
 
+@ConsistentCopyVisibility
 data class Cost private constructor(val value: Double) {
+
   companion object {
     val ZERO = Cost(0.0)
 
@@ -11,4 +13,5 @@ data class Cost private constructor(val value: Double) {
       return Cost(value)
     }
   }
+
 }

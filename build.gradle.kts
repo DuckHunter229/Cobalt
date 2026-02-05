@@ -30,7 +30,6 @@ repositories {
   mavenCentral()
   maven("https://maven.meteordev.org/releases")
   maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
-  maven("https://api.modrinth.com/maven")
 }
 
 dependencies {

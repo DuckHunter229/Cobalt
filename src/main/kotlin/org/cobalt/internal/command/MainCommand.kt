@@ -22,12 +22,12 @@ internal object MainCommand : Command(name = "cobalt", aliases = arrayOf("cb")) 
   @SubCommand
   fun rotate(yaw: Double, pitch: Double, duration: Int) {
     RotationExecutor.rotateTo(
-            Rotation(yaw.toFloat(), pitch.toFloat()),
-            TimedEaseStrategy(
-                    yawEasing = EasingType.EASE_OUT_EXPO,
-                    pitchEasing = EasingType.EASE_OUT_EXPO,
-                    duration = duration.toLong()
-            )
+      Rotation(yaw.toFloat(), pitch.toFloat()),
+      TimedEaseStrategy(
+        yawEasing = EasingType.EASE_OUT_EXPO,
+        pitchEasing = EasingType.EASE_OUT_EXPO,
+        duration = duration.toLong()
+      )
     )
   }
 
@@ -37,12 +37,12 @@ internal object MainCommand : Command(name = "cobalt", aliases = arrayOf("cb")) 
     val pitch = Random.nextFloat() * 180f - 90f
 
     RotationExecutor.rotateTo(
-            Rotation(yaw, pitch),
-            TimedEaseStrategy(
-                    yawEasing = EasingType.EASE_OUT_EXPO,
-                    pitchEasing = EasingType.EASE_OUT_EXPO,
-                    duration = 400L
-            )
+      Rotation(yaw, pitch),
+      TimedEaseStrategy(
+        yawEasing = EasingType.EASE_OUT_EXPO,
+        pitchEasing = EasingType.EASE_OUT_EXPO,
+        duration = 400L
+      )
     )
   }
 
